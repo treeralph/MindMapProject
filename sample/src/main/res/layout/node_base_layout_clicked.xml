@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    android:id="@+id/outerLayout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <androidx.cardview.widget.CardView
+            android:id="@+id/nodeCardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:contentPadding="2dp"
+            app:cardCornerRadius="10dp"
+            android:background="?android:attr/selectableItemBackground"
+            app:cardBackgroundColor="@color/textColor">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="9dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/portrait"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:layout_gravity="center"
+                        android:src="@mipmap/ic_launcher"/>
+                    <TextView
+                        android:id="@+id/name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:padding="2dp"
+                        android:maxLength="8"
+                        android:ellipsize="end"
+                        android:textColor="@color/textColor"
+                        android:textSize="13sp"
+                        android:text="content"/>
+
+                    <TextView
+                        android:id="@+id/content"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:maxLines="4"
+                        android:maxWidth="80dp"
+                        android:gravity="center"
+                        android:padding="3dp"
+                        android:text="Clicked"
+                        android:ellipsize="end"
+                        android:textColor="@color/colorBackground"
+                        android:textSize="10sp"
+                        android:background="@color/textColor"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+</FrameLayout>

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FolderActivity"
+    android:background="@color/colorBackground">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="30dp"
+        android:text="Choose Folder"
+        android:textSize="16dp"
+        android:textColor="@color/textColor"
+        android:gravity="center"
+        android:fontFamily="@font/poppins_light"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/folder_activity_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_centerVertical="true"
+        tools:listitem="@layout/item_recycler_view_folder"/>
+
+
+    <LinearLayout
+        android:id="@+id/folder_activity_button_view_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="50dp"
+        android:layout_marginRight="30dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/folder_activity_write_button"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:padding="5dp"
+            android:src="@drawable/write_button"/>
+
+        <ImageView
+            android:id="@+id/folder_activity_remove_button"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:padding="5dp"
+            android:src="@drawable/remove_button"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/folder_activity_write_view_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
+        android:visibility="gone"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true">
+        <EditText
+            android:id="@+id/folder_activity_write_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:backgroundTint="@color/transparent"
+            android:textColor="@color/textColor"
+            android:textColorHint="@color/textColor"
+            android:textSize="18dp"
+            android:hint="Input New Folder Name"
+            android:fontFamily="@font/poppins_light"/>
+
+        <TextView
+            android:id="@+id/folder_activity_write_write_done_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:textSize="16dp"
+            android:text="Add New Folder"
+            android:textColor="@color/LineColor1"
+            android:fontFamily="@font/poppins_light"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/folder_activity_remove_view_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
+        android:visibility="gone"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:backgroundTint="@color/transparent"
+            android:textColor="@color/textColor"
+            android:textColorHint="@color/textColor"
+            android:textSize="18dp"
+            android:editable="false"
+            android:hint="Choose Folder to Remove"
+            android:fontFamily="@font/poppins_light"/>
+
+        <TextView
+            android:id="@+id/folder_activity_write_remove_done_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:textSize="16dp"
+            android:text="Remove the selected"
+            android:textColor="@color/LineColor1"
+            android:fontFamily="@font/poppins_light"/>
+    </LinearLayout>
+</RelativeLayout>

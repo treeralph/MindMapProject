@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="@color/textColor"
+        app:contentPadding="2dp"
+        app:cardCornerRadius="20dp">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="18dp">
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="5dp"
+                        android:orientation="horizontal"
+                        android:background="@color/textColor">
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"/>
+
+                        <ImageView
+                            android:id="@+id/dialog_node_detail_remove_button"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="center"
+                            android:layout_marginRight="10dp"
+                            android:src="@drawable/trash_can_icon"/>
+                        <ImageView
+                            android:id="@+id/dialog_node_detail_setting_button"
+                            android:layout_width="27dp"
+                            android:layout_height="27dp"
+                            android:layout_marginRight="10dp"
+                            android:src="@drawable/setting_icon_white"/>
+                        <ImageView
+                            android:id="@+id/dialog_node_detail_move_button"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/move_icon_white"/>
+                    </LinearLayout>
+                    <ImageView
+                        android:id="@+id/dialog_node_detail_image_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:src="@drawable/image_view_background"/>
+
+                    <LinearLayout
+
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="15dp"
+                        android:orientation="vertical"
+                        android:background="@drawable/color_from_background_color_to_line_color">
+
+                        <TextView
+                            android:id="@+id/dialog_node_detail_title_text_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:text="title text view"
+                            android:textSize="15dp"
+                            android:textColor="@color/textColor"
+                            android:fontFamily="@font/poppins_medium"/>
+                        <TextView
+                            android:id="@+id/dialog_node_detail_description_text_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:text="description text view"
+                            android:textSize="13dp"
+                            android:textColor="@color/textColor"
+                            android:fontFamily="@font/poppins_light"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </ScrollView>
+        </androidx.cardview.widget.CardView>
+    </androidx.cardview.widget.CardView>
+
+
+</RelativeLayout>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/colorBackground">
+    
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/add_node_page_0_thumbnail_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="30dp"
+        app:cardCornerRadius="30dp"
+        app:contentPadding="1.5dp"
+        app:cardBackgroundColor="@color/textColor">
+        <androidx.cardview.widget.CardView
+            android:id="@+id/add_node_page_0_thumbnail_inner_card_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="30dp"
+            app:contentPadding="5dp"
+            app:cardBackgroundColor="@color/colorBackground">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="2dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/add_node_page_0_thumbnail_check_icon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_gravity="center"
+                    android:visibility="gone"
+                    android:src="@drawable/check_icon"/>
+
+                <TextView
+                    android:id="@+id/add_node_page_0_thumbnail_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="use youtube thumbnail"
+                    android:textSize="14dp"
+                    android:fontFamily="@font/poppins_light"
+                    android:textColor="@color/textColor"/>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+    </androidx.cardview.widget.CardView>
+    
+    <EditText
+        android:id="@+id/add_node_page_0_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:text=""
+        android:textSize="18dp"
+        android:textColor="@color/textColor"
+        android:hint="Input your Link"
+        android:textColorHint="@color/textColor"
+        android:fontFamily="@font/poppins_light"
+        android:backgroundTint="@color/transparent"/>
+
+    <TextView
+        android:id="@+id/add_node_page_0_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="60dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:text="NEXT"
+        android:textColor="@color/LineColor1"
+        android:textSize="16dp"/>
+
+
+</RelativeLayout>

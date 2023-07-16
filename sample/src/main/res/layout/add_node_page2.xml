@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/colorBackground">
+
+    <EditText
+        android:id="@+id/add_node_page_2_edit_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textSize="18dp"
+        android:textColor="@color/textColor"
+        android:hint="Input Content Name"
+        android:textColorHint="@color/textColor"
+        android:fontFamily="@font/poppins_light"
+        android:backgroundTint="@color/transparent"/>
+
+    <TextView
+        android:id="@+id/add_node_page_2_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="60dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:text="NEXT"
+        android:textColor="@color/LineColor1"
+        android:textSize="16dp"/>
+
+
+</RelativeLayout>
