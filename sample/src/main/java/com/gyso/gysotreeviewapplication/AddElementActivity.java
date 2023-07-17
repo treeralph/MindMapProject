@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -248,6 +249,7 @@ public class AddElementActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View view) {
                             binding.addElementActivityViewPager.setCurrentItem(2);
+                            imgBitmap = ((BitmapDrawable) page1ImageView.getDrawable()).getBitmap();
                         }
                     });
 
@@ -289,13 +291,6 @@ public class AddElementActivity extends AppCompatActivity {
 
                     if(isUpdate){
                         try {
-
-                            /**
-                             *
-                             *
-                             *
-                             * */
-
                             adapter.setClickedElem(updatingElement.id);
                         } catch(Exception e){
                             Log.e(TAG, "onBindViewHolder: ");
@@ -307,19 +302,36 @@ public class AddElementActivity extends AppCompatActivity {
                         public void onClick(View view) {
                             try{
                                 Element clicked = adapter.getClickedElem();
-
                                 ChildIndex childIndex = db.childIndexDao().getChildIndexWithElementId(clicked.id);
                                 int index = childIndex.index;
 
                                 Element newElem = new Element();
-                                newElem.parentId = clicked.id;
-                                newElem.description = description;
-                                newElem.content = contentName;
-                                newElem.linkUrl = linkUrl;
-                                newElem.lineNum = childIndex.index;
 
-                                childIndex.index = index + 1;
-                                db.childIndexDao().updateChildIndexes(childIndex);
+                                if(isUpdate){
+                                    updatingElement.description = description;
+                                    updatingElement.content = contentName;
+                                    updatingElement.linkUrl = linkUrl;
+                                    if(findRootId(updatingElement.id) != clicked.id){
+                                        updatingElement.parentId = clicked.id;
+                                        updatingElement.lineNum = index;
+
+                                        childIndex.index = index + 1;
+                                        db.childIndexDao().updateChildIndexes(childIndex);
+                                    }
+                                    newElem = updatingElement;
+
+                                    File tempFile = new File(updatingElement.imgUri);
+                                    tempFile.delete();
+                                } else {
+                                    newElem.parentId = clicked.id;
+                                    newElem.description = description;
+                                    newElem.content = contentName;
+                                    newElem.linkUrl = linkUrl;
+                                    newElem.lineNum = index;
+
+                                    childIndex.index = index + 1;
+                                    db.childIndexDao().updateChildIndexes(childIndex);
+                                }
 
                                 if(imgBitmap != null) {
                                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -350,41 +362,31 @@ public class AddElementActivity extends AppCompatActivity {
                                     newElem.isLink = true;
                                 }
 
-                                /**
-                                 * @status: Done
-                                 *
-                                 * 유튜브의 공유기능으로 어플리케이션을 작동시키면 예상컨데 이 엑티비티가 메인엑티비티 실행 없이 켜질 것이다.
-                                 * 따라서, 공유기능으로 어플리케이션을 실행시켰을 떄는 메인엑티비티로의 인텐트가 필요하다.
-                                 * 인텐트 없이 엑티비티를 터미널시키면 어플리케이션이 종료 될 것이기 때문이다.
-                                 *
-                                 * 하지만 메인엑티비티 실행 후 이 엑티비티로 진행한 경우 메인엑티비티의 onActivityResult로 데이터를
-                                 * 전달하는 편이 좋다.
-                                 *
-                                 * 위의 이유로 분기처리가 필요하며 기준은 백스텍에 메인엑티비티가 존재하는지 그렇지 않은지로 하는 것이 좋을 듯하다.
-                                 * */
+                                if(isUpdate){
+                                    Log.e(TAG, "newElem: " + newElem.toString());
+                                    db.elementDao().updateElements(newElem);
+                                    setResult(RESULT_OK);
+                                } else {
+                                    Log.e(TAG, "newElem: " + newElem.toString());
+                                    long rowId = db.elementDao().insertElement(newElem);
 
+                                    ChildIndex newChildIndex = new ChildIndex();
+                                    newChildIndex.elementId = (int) rowId;
+                                    db.childIndexDao().insertChildIndexes(newChildIndex);
 
-
-                                Log.e("AddElementActivity", "newElem: " + newElem.toString());
-                                long rowId = db.elementDao().insertElement(newElem);
-
-                                ChildIndex newChildIndex = new ChildIndex();
-                                newChildIndex.elementId = (int) rowId;
-                                db.childIndexDao().insertChildIndexes(newChildIndex);
-
-                                ActivityManager activityManager = (ActivityManager) getApplication().getSystemService( Activity.ACTIVITY_SERVICE );
-                                ActivityManager.RunningTaskInfo task = activityManager.getRunningTasks( 10 ).get(0);
-                                if(task.numActivities == 1){
-                                    // MainActivity doesn't exist.
-                                    Intent intent = new Intent(AddElementActivity.this, MainActivity.class);
-                                    startActivity(intent);
-                                }else{
-                                    // MainActivity exists.
-                                    Intent intent = new Intent();
-                                    intent.putExtra("newNodeId", rowId);
-                                    setResult(RESULT_OK, intent);
+                                    ActivityManager activityManager = (ActivityManager) getApplication().getSystemService(Activity.ACTIVITY_SERVICE);
+                                    ActivityManager.RunningTaskInfo task = activityManager.getRunningTasks(10).get(0);
+                                    if (task.numActivities == 1) {
+                                        // MainActivity doesn't exist.
+                                        Intent intent = new Intent(AddElementActivity.this, MainActivity.class);
+                                        startActivity(intent);
+                                    } else {
+                                        // MainActivity exists.
+                                        Intent intent = new Intent();
+                                        intent.putExtra("newNodeId", rowId);
+                                        setResult(RESULT_OK, intent);
+                                    }
                                 }
-
                                 finish();
 
                             } catch(Exception e){
@@ -398,6 +400,14 @@ public class AddElementActivity extends AppCompatActivity {
                     break;
             }
         }
+
+        Runnable makeRunnable = () -> {
+
+        };
+
+        Runnable updateRunnable = () -> {
+
+        };
 
         @Override
         public int getItemCount() {
@@ -494,6 +504,16 @@ public class AddElementActivity extends AppCompatActivity {
                 textView.setHint(spannableStringBuilder);
             }
         }
+    }
+
+
+
+    private int findRootId(int currentId) {
+        Element current = db.elementDao().getElementWithId(currentId);
+        while(current.parentId != -1) {
+            current = db.elementDao().getElementWithId(current.parentId);
+        }
+        return current.id;
     }
 
     private void handleSharedText() {

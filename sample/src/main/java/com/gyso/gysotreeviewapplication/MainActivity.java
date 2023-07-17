@@ -42,6 +42,7 @@ import com.gyso.treeview.model.TreeModel;
 
 import org.w3c.dom.Node;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -53,7 +54,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final int PSEUDO_NODE_FOR_NEW_BRANCH = -2;
     public static final int CHOOSE_FOLDER_REQUEST_CODE = 0;
     public static final int ADD_ELEMENT_REQUEST_CODE = 1;
 
@@ -89,11 +89,6 @@ public class MainActivity extends AppCompatActivity {
             setDataElement(newElement.parentId);
         }
     }
-
-    /**
-     * @Author: jun
-     * todo: how to manage target Node!!!!!!!! ??????????
-     * */
 
     /**
      * To use a tree view, you should do 6 steps as follows:
@@ -137,14 +132,19 @@ public class MainActivity extends AppCompatActivity {
             Map<String, Object> relation = (Map<String, Object>) object;
             NodeModel<Element> released = (NodeModel<Element>) relation.get("released");
             NodeModel<Element> targeted = (NodeModel<Element>) relation.get("targeted");
-            /**
-             * todo: onDragMoveNodesHit에서 지금까지 처리하던 것을 여기서 처리하려고 한다.
-             * */
-            if(targeted.value.id == PSEUDO_NODE_FOR_NEW_BRANCH) {
 
-            } else{
+            int targetedIndex = targeted.value.id;
+            ChildIndex targetedChildIndex = db.childIndexDao().getChildIndexWithElementId(targetedIndex);
+            int index = targetedChildIndex.index;
 
-            }
+            Element releasedElement = released.value;
+            releasedElement.parentId = targeted.value.id;
+            releasedElement.lineNum = index;
+
+            targetedChildIndex.index = index + 1;
+
+            db.elementDao().updateElements(releasedElement);
+            db.childIndexDao().updateChildIndexes(targetedChildIndex);
         });
 
         //6 you own others jobs
@@ -161,14 +161,7 @@ public class MainActivity extends AppCompatActivity {
                     setDataElement(currentRootId);
                 }
             }else if(requestCode == ADD_ELEMENT_REQUEST_CODE){
-                int newNodeId = (int) data.getLongExtra("newNodeId", 0);
-                if(newNodeId != 0){
-                    Element newNode = db.elementDao().getElementWithId(newNodeId);
-                    NodeModel<Element> newNodeModel = new NodeModel<>(newNode);
-                    editor.addChildNodes(adapter.getTreeModel().getRootNode(), newNodeModel);
-                }else{
-                    setDataElement(adapter.getTreeModel().getRootNode().value.id);
-                }
+                setDataElement(adapter.getTreeModel().getRootNode().value.id);
             }
         }
     }
@@ -201,27 +194,7 @@ public class MainActivity extends AppCompatActivity {
         //drag to move node
         binding.dragEditModeRd.setOnCheckedChangeListener((v, isChecked)->{
             editor.requestMoveNodeByDragging(isChecked);
-            /*
-            if(isChecked){ // edit mode
-                NodeModel<Element> rootNodeModel = adapter.getTreeModel().getRootNode();
-                Element pseudoNode = new Element();
-                pseudoNode.id = PSEUDO_NODE_FOR_NEW_BRANCH;
-                pseudoNode.parentId = rootNodeModel.value.id;
-                pseudoNode.isLink = false;
-                pseudoNode.isImg = false;
-                NodeModel<Element> pseudoNodeModel = new NodeModel<>(pseudoNode);
-                editor.addChildNodes(rootNodeModel, pseudoNodeModel);
-            }else{ // normal mode
-                NodeModel<Element> rootNodeModel = adapter.getTreeModel().getRootNode();
-                for(NodeModel<Element> child: rootNodeModel.childNodes) {
-                    if(child.value.id == PSEUDO_NODE_FOR_NEW_BRANCH) {
-                        editor.removeNode(child);
-                        setDataElement(rootNodeModel.value.id);
-                    }
-                }
-                editor.focusMidLocation();
-            }
-             */
+            adapter.changeMode();
         });
 
         //focus, means that tree view fill center in your window viewport
@@ -243,8 +216,18 @@ public class MainActivity extends AppCompatActivity {
                     childElement.parentId = element.parentId;
                     db.elementDao().updateElements(childElement);
                 }
+
+                File targetFile = new File(element.imgUri);
+                targetFile.delete();
+
                 db.elementDao().deleteElement(element);
                 setDataElement(adapter.getTreeModel().getRootNode().value.id);
+            }, object -> {
+                // setting callback
+                Element element = (Element) object;
+                Intent intent = new Intent(MainActivity.this, AddElementActivity.class);
+                intent.putExtra(ElementDetailDialog.ADD_ELEMENT_ID_EXTRA, element.id);
+                startActivityForResult(intent, ADD_ELEMENT_REQUEST_CODE);
             });
             dialog.setCanceledOnTouchOutside(true);
             dialog.setCancelable(true);
@@ -288,44 +271,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDragMoveNodesHit(NodeModel<?> draggingNode, NodeModel<?> hittingNode, View draggingView, View hittingView) {
 
-                /**
-                 * Hit이 발생할때마다 호출되는 메서드이므로 의도한 바와 다르다.
-                 * 따라서, db 업데이트를 이 메서드에서 수행하는 것을 옳지 않다.
-                 * */
-
-                /*
-                try {
-                    Element draggingNodeValue = (Element) draggingNode.value;
-                    Element hittingNodeValue = (Element) hittingNode.value;
-                    if(hittingNodeValue.id == PSEUDO_NODE_FOR_NEW_BRANCH){
-                        NodeModel<Element> root = adapter.getTreeModel().getRootNode();
-
-                        ChildIndex childIndex = db.childIndexDao().getChildIndexWithElementId(root.value.id);
-                        int index = childIndex.index;
-
-                        draggingNodeValue.parentId = root.value.id;
-                        draggingNodeValue.lineNum = index;
-                        db.elementDao().updateElements(draggingNodeValue);
-
-                        childIndex.index = index + 1;
-                        db.childIndexDao().updateChildIndexes(childIndex);
-                        Log.e(TAG, "onDragMoveNodesHit: " + "ASDFASDFASDF");
-                    }else{
-                        ChildIndex childIndex = db.childIndexDao().getChildIndexWithElementId(hittingNodeValue.id);
-                        int index = childIndex.index;
-
-                        draggingNodeValue.parentId = hittingNodeValue.id;
-                        draggingNodeValue.lineNum = index;
-
-                        childIndex.index = index + 1;
-                        db.childIndexDao().updateChildIndexes(childIndex);
-                        db.elementDao().updateElements(draggingNodeValue);
-                    }
-                }catch(Exception e){
-
-                }
-
-                 */
             }
         });
     }

@@ -38,7 +38,7 @@ public class ElementDetailDialog extends Dialog {
      * 따라서, 해상도가 높은 이미지와 해상도가 낮은 이미지를 각각 저장하는 편이 좋을 것 같다.
      * */
 
-    public ElementDetailDialog(@NonNull Context context, NodeModel<Element> elementNode, Callback deleteCallback) {
+    public ElementDetailDialog(@NonNull Context context, NodeModel<Element> elementNode, Callback deleteCallback, Callback settingCallback) {
         super(context);
         binding = DialogNodeDetailBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -86,9 +86,7 @@ public class ElementDetailDialog extends Dialog {
 
         });
         binding.dialogNodeDetailSettingButton.setOnClickListener(v -> {
-            Intent intent = new Intent(context, AddElementActivity.class);
-            intent.putExtra(ADD_ELEMENT_ID_EXTRA, element.id);
-            context.startActivity(intent);
+            settingCallback.onCallback(element);
             this.dismiss();
         });
         binding.dialogNodeDetailRemoveButton.setOnClickListener(v -> {

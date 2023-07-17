@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -44,8 +45,7 @@ public class ElementTreeViewAdapter extends TreeViewAdapter<Element> {
     private EmptyLine emptyLine = new EmptyLine();
     private OnItemClickListener listener;
     private OnItemLongClickListener longListener;
-    private int clicked = -10;
-    private NodeModel<Element> clickedNodeModel;
+    private boolean editMode = false;
 
     public void setOnItemListener(OnItemClickListener listener) {
         this.listener = listener;
@@ -56,12 +56,9 @@ public class ElementTreeViewAdapter extends TreeViewAdapter<Element> {
 
     @Override
     public TreeViewHolder<Element> onCreateViewHolder(@NonNull ViewGroup viewGroup, NodeModel<Element> node) {
-        if(node.value.id == MainActivity.PSEUDO_NODE_FOR_NEW_BRANCH){
+        if(node.value.parentId == -1){
             NodeBaseLayoutForNewBranchBinding nodeForNewBranchBinding = NodeBaseLayoutForNewBranchBinding.inflate(LayoutInflater.from(viewGroup.getContext()),viewGroup,false);
             return new TreeViewHolder<>(nodeForNewBranchBinding.getRoot(), node);
-        } else if(node.value.id == clicked){
-            NodeBaseLayoutClickedBinding nodeClickedBinding = NodeBaseLayoutClickedBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false);
-            return new TreeViewHolder<>(nodeClickedBinding.getRoot(), node);
         } else {
             NodeBaseLayoutBinding nodeBinding = NodeBaseLayoutBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false);
             return new TreeViewHolder<>(nodeBinding.getRoot(), node);
@@ -72,13 +69,18 @@ public class ElementTreeViewAdapter extends TreeViewAdapter<Element> {
     public void onBindViewHolder(@NonNull TreeViewHolder<Element> holder) {
         //todo get view and node from holder, and then show by you
         try {
-            if (holder.getNode().value.id == MainActivity.PSEUDO_NODE_FOR_NEW_BRANCH) {
+            View itemView = holder.getView();
+
+            if (holder.getNode().value.parentId == -1) {
+                RelativeLayout outLayout = itemView.findViewById(R.id.node_base_layout_for_new_branch_out);
+                if(editMode){
+                    outLayout.setVisibility(View.VISIBLE);
+                }else{
+                    outLayout.setVisibility(View.INVISIBLE);
+                }
                 return;
             }
 
-
-
-            View itemView = holder.getView();
             NodeModel<Element> node = holder.getNode();
             FrameLayout outerViewGroup = itemView.findViewById(R.id.outerLayout);
             CardView totalCardView = itemView.findViewById(R.id.nodeCardView);
@@ -101,7 +103,6 @@ public class ElementTreeViewAdapter extends TreeViewAdapter<Element> {
             if (element.parentId == -1) {
                 outerViewGroup.setVisibility(View.INVISIBLE);
             }
-
 
             if (element.isImg) {
                 try {
@@ -142,6 +143,15 @@ public class ElementTreeViewAdapter extends TreeViewAdapter<Element> {
         }
     }
 
+    public void changeMode() {
+        if(editMode){
+            editMode = false;
+        }else{
+            editMode = true;
+        }
+        notifyDataSetChange();
+    }
+
     @Override
     public BaseLine onDrawLine(DrawInfo drawInfo) {
         TreeViewHolder<?> toHolder = drawInfo.getToHolder();
@@ -157,21 +167,6 @@ public class ElementTreeViewAdapter extends TreeViewAdapter<Element> {
         return null;
     }
 
-    public void setClicked(NodeModel<Element> targetNode){
-        int target = targetNode.value.id;
-        if(clicked == target){
-            clicked = -10;
-            clickedNodeModel = null;
-        }else{
-            clicked = target;
-            clickedNodeModel = targetNode;
-        }
-        notifyDataSetChange();
-    }
-
-    public NodeModel<Element> getClickedNodeModel(){
-        return clickedNodeModel;
-    }
 
     public interface OnItemClickListener{
         void onItemClick(View item, NodeModel<Element> node);
